@@ -16,9 +16,9 @@ export type UserSlice = UserStore & UserActions;
 
 export const createUserSlice: StoreSlice<UserSlice> = (set) => ({
   data: {
-    name: 'Mateus Silva',
-    email: 'mateus@jstack.com.br',
-    username: 'maateusilva',
+    name: 'Danillo Torres',
+    email: 'danilloept@gmail.com',
+    username: 'danillotorresdev',
   },
   setUsername: (username: string) => set(prevState => {
     prevState.user.data.username = username;

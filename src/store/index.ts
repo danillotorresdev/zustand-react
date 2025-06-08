@@ -1,31 +1,31 @@
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
-import { Store } from './Store';
-import { createCounterSlice } from './slices/counterSlice';
-import { createUserSlice } from './slices/userSlice';
+import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
+import { Store } from "./Store";
+import { createCounterSlice } from "./slices/counterSlice";
+import { createUserSlice } from "./slices/userSlice";
 
 export const useStore = create<Store>()(
   devtools(
     persist(
-      immer(
-        (...params) => ({
-          counter: {...createCounterSlice(...params)},
-          user: {...createUserSlice(...params)},
-        })
-      ),
+      immer((...params) => ({
+        counter: { ...createCounterSlice(...params) },
+        user: { ...createUserSlice(...params) },
+      })),
       {
-        name: 'storage-key',
+        name: "storage-key",
         merge: (persistedState, currentState) => {
-          return Object.entries(currentState).reduce(([key, initialSliceValue]) => {
-            const typesafeKey = key as keyof typeof persistedState;
+          Object.entries(currentState).forEach(([key, initialSliceValue]) => {
+            const typesafeKey = key as keyof Store;
             const persistedSliceValue = (persistedState as Store)[typesafeKey];
-
-            Object.assign(initialSliceValue, persistedSliceValue);
-          }, {} as Store);
+            if (persistedSliceValue) {
+              Object.assign(initialSliceValue, persistedSliceValue);
+            }
+          });
+          return currentState;
         },
-      },
+      }
     ),
-    { enabled: import.meta.env.DEV },
+    { enabled: import.meta.env.DEV }
   )
 );
